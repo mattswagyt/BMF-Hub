@@ -2125,11 +2125,11 @@ ScriptsTab:AddButton({
 })
 
 ScriptsTab:AddButton({
-    Name = "FE Audio Spammer",
+    Name = "Fling GUI",
     Callback = function()
         local script5 = [[
-             loadstring(game:HttpGet("https://pastebin.com/raw/fuKPSYyQ", true))()
-            print("Audio Script executed")
+             loadstring(game:HttpGet('https://pastebin.com/raw/r97d7dS0', true))()
+            print("Fling GUI executed!")
         ]]
         loadstring(script5)()
     end
