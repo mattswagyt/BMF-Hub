@@ -556,7 +556,7 @@ GamesTab:AddButton({
     Name = "Squid Games - Script 2",
     Callback = function()
         local script31A = [[
-               loadstring(game:HttpGet('https://pastebin.com/raw/T9vegSYx'))()
+               loadstring(game:HttpGet("https://pastebin.com/raw/gyqXnABB"))()
         ]]
         loadstring(script31A)()
     end
