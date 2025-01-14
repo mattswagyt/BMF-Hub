@@ -556,19 +556,9 @@ GamesTab:AddButton({
     Name = "Squid Games - Script 2",
     Callback = function()
         local script31A = [[
-               loadstring(game:HttpGet("https://raw.githubusercontent.com/SpongeRep/Spong3/main/SQG"))()
+               loadstring(game:HttpGet('https://pastebin.com/raw/T9vegSYx'))()
         ]]
         loadstring(script31A)()
-    end
-})
-
-GamesTab:AddButton({
-    Name = "Squid Games Script 3",
-    Callback = function()
-        local script31B = [[
-               loadstring(game:HttpGet("https://raw.githubusercontent.com/DuckHubzz/SquidGame/main/SquidGame.lua", true))()
-        ]]
-        loadstring(script31B)()
     end
 })
 
