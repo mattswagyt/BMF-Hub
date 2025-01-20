@@ -171,102 +171,42 @@ GamesTab:AddButton({
 })
 
 GamesTab:AddButton({
-    Name = "Jailbreak - Universal Farm",
+    Name = "Jailbreak - Jailhax",
     Callback = function()
         local script13 = [[
-             loadstring(game:HttpGet('https://raw.githubusercontent.com/BlitzIsKing/UniversalFarm/main/Loader/Regular'))()
+             loadstring(game:HttpGet("https://jailhax.lol/scripts/FarmFree.lua"))()
         ]]
         loadstring(script13)()
     end
 })
 
 GamesTab:AddButton({
-    Name = "Jailbreak - Vynixius",
+    Name = "Jailbreak - Project Auto V5",
     Callback = function()
         local script14 = [[
-             loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Vynixius/main/Jailbreak/Script.lua"))()
+             loadstring(game:HttpGet('http://scripts.projectauto.xyz/AutoRobV5'))()
         ]]
         loadstring(script14)()
     end
 })
 
 GamesTab:AddButton({
-    Name = "Jailbreak - Project Auto V5",
+    Name = "Spider - Script 1",
     Callback = function()
         local script15 = [[
-              loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxsta72/ProjectAuto/refs/heads/main/AutoRobV5", true))()
+              loadstring(game:HttpGet("https://pastebin.com/raw/eDzjAAbK"))()
         ]]
         loadstring(script15)()
     end
 })
 
 GamesTab:AddButton({
-    Name = "Jailbreak - Sky Hub",
+    Name = "Spider - Script 2",
     Callback = function()
         local script15A = [[
-              loadstring(game:HttpGet("https://raw.githubusercontent.com/arlists/Sky-Hub/main/Main", true))()
+              loadstring(game:HttpGet("https://abre.ai/spider-lua"))()
         ]]
         loadstring(script15A)()
-    end
-})
-
-GamesTab:AddButton({
-    Name = "Jailbreak - Salazar Hub",
-    Callback = function()
-        local script15B = [[
-              loadstring(game:HttpGet("https://raw.githubusercontent.com/xxSirLotte/Salazar/main/SalazarHub"))()
-        ]]
-        loadstring(script15B)()
-    end
-})
-
-GamesTab:AddButton({
-    Name = "Jailbreak - Ice Tray V3",
-    Callback = function()
-        local script15C = [[
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/piglex9/icetray3/main/latest.lua"))()
-        ]]
-        loadstring(script15C)()
-    end
-})
-
-GamesTab:AddButton({
-    Name = "Jailbreak - Vortex Hub",
-    Callback = function()
-        local script15D = [[
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/devnorb/vortexjb/main/loader.lua"))()
-        ]]
-        loadstring(script15D)()
-    end
-})
-
-GamesTab:AddButton({
-    Name = "Jailbreak - OneMoreHub",
-    Callback = function()
-        local script15E = [[
-            loadstring(game:HttpGet('https://onemorehub.weinzspace.com/'))()
-        ]]
-        loadstring(script15E)()
-    end
-})
-
-GamesTab:AddButton({
-    Name = "Jailbreak - Senstation (May not work on Solara!)",
-    Callback = function()
-        local script15F = [[
-            loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/ca2b1b7c49e4c14397b2a5e474f8b1ab.lua"))()
-        ]]
-        loadstring(script15F)()
-    end
-})
-
-GamesTab:AddButton({
-    Name = "Jailbreak - Universal Farm",
-    Callback = function()
-        local script15G = [[
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/MinimalScriptingService/MinimalRivals/main/rivals.lua",true))()
-        ]]
-        loadstring(script15G)()
     end
 })
 
@@ -399,46 +339,6 @@ GamesTab:AddButton({
              loadstring(game:HttpGet(("https://raw.githubusercontent.com/ionlyusegithubformcmods/1-Line-Scripts/main/Slap%20Battles")))()
         ]]
         loadstring(script22)()
-    end
-})
-
-GamesTab:AddButton({
-    Name = "Slap Battles - Dizzy Hub",
-    Callback = function()
-        local script22A = [[
-             loadstring(game:HttpGet("https://raw.githubusercontent.com/dizyhvh/slap_battles_gui/main/0.lua"))()
-        ]]
-        loadstring(script22A)()
-    end
-})
-
-GamesTab:AddButton({
-    Name = "Slap Battles - LKHUB",
-    Callback = function()
-        local script22B = [[
-             loadstring(game:HttpGet("https://lkhub.net/s/loader.lua"))()
-        ]]
-        loadstring(script22B)()
-    end
-})
-
-GamesTab:AddButton({
-    Name = "Slap Battles - Rogue Hub",
-    Callback = function()
-        local script22C = [[
-             loadstring(game:HttpGet("https://raw.githubusercontent.com/Kitzoon/Rogue-Hub/main/Main.lua", true))()
-        ]]
-        loadstring(script22C)()
-    end
-})
-
-GamesTab:AddButton({
-    Name = "Slap Battles - Oblivion Hub",
-    Callback = function()
-        local script22D = [[
-             loadstring(game:HttpGet('https://raw.githubusercontent.com/katrina367/ScriptBlox-Projects/main/OblivionAutoEXEV1'))()
-        ]]
-        loadstring(script22D)()
     end
 })
 
@@ -884,10 +784,10 @@ GamesTab:AddButton({
 })
 
 GamesTab:AddButton({
-    Name = "Murder Mystery 2 - Admin Panel",
+    Name = "Murder Mystery 2 - Vertex",
     Callback = function()
         local script47 = [[
-             loadstring(game:HttpGet(('https://raw.githubusercontent.com/MarsQQ/ScriptHubScripts/master/MM2%20Admin%20Panel'),true))()
+             loadstring(game:HttpGet('https://raw.githubusercontent.com/vertex-peak/vertex/refs/heads/main/loadstring'))()
         ]]
         loadstring(script47)()
     end
@@ -897,7 +797,7 @@ GamesTab:AddButton({
     Name = "Murder Mystery 2 - Trade Scam",
     Callback = function()
         local script48 = [[
-             loadstring(game:HttpGet("https://raw.githubusercontent.com/nojon353/Trade-GUI/main/MM2", false))()
+             loadstring(game:HttpGet("https://raw.githubusercontent.com/pastebin11/Sigma/refs/heads/main/Mm2"))()
         ]]
         loadstring(script48)()
     end
