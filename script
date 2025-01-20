@@ -566,7 +566,7 @@ GamesTab:AddButton({
     Name = "Squid Games X - Script 1",
     Callback = function()
         local script31C = [[
-              loadstring(game:HttpGet("https://raw.githubusercontent.com/DuckHubzz/SquidGame/main/SquidGame.lua", true))()
+              loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/2aaf9f625816eed21d2b07cb0352eed2.lua"))()
         ]]
         loadstring(script31C)()
     end
