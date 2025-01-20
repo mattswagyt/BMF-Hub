@@ -566,7 +566,7 @@ GamesTab:AddButton({
     Name = "Shrimp Games - Script 1",
     Callback = function()
         local script31B = [[
-              loadstring(game:HttpGet("https://pastebin.com/raw/sZMqmjKc"))()
+              loadstring(game:HttpGet("https://pastebin.com/raw/YF3Gi0WJ"))()
         ]]
         loadstring(script31B)()
     end
@@ -576,7 +576,7 @@ GamesTab:AddButton({
     Name = "Shrimp Games - Script 2",
     Callback = function()
         local script31C = [[
-              loadstring(game:HttpGet("https://raw.githubusercontent.com/ETHUS4/XethusHub/refs/heads/main/Universal.BR"))()
+              loadstring(game:HttpGet("https://raw.githubusercontent.com/MateoDev2024/MoonX/refs/heads/main/Loader.lua"))()
         ]]
         loadstring(script31C)()
     end
