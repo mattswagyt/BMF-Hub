@@ -31,10 +31,10 @@ GamesTab:AddButton({
 })
 
 GamesTab:AddButton({
-    Name = "Prison life - Jake's GUI",
+    Name = "Prison life - FE Bypass GUI",
     Callback = function()
         local script2 = [[
-            loadstring(game:HttpGet("https://pastebin.com/raw/368jun5d", true))() 
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/g00lXploiter/g00lXploiter/main/Fe%20bypass", true))()
         ]]
         loadstring(script2)()
     end
