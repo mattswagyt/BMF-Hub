@@ -37,7 +37,12 @@ GamesSection:AddButton({
     confirm = true,
     callback = function()
         print("Executed Prizz Life!")
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/elliexmln/PrizzLife/main/pladmin.lua'))()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/elliexmln/PrizzLife/main/pladmin.lua'))()
+        end)
+        if not success then
+            print("Error executing Prizz Life: " .. err)
+        end
     end
 })
 
@@ -48,7 +53,12 @@ GamesSection:AddButton({
     confirm = true,
     callback = function()
         print("Executed Fent Admin!")
-        loadstring(game:HttpGet("https://pastebin.com/raw/QM8nxmCX"))()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://pastebin.com/raw/QM8nxmCX"))()
+        end)
+        if not success then
+            print("Error executing Fent Admin: " .. err)
+        end
     end
 })
 
@@ -59,7 +69,12 @@ GamesSection:AddButton({
     confirm = true,
     callback = function()
         print("Executed Local Player!")
-        loadstring(game:HttpGet("https://pastebin.com/raw/iZ64yzjE"))()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://pastebin.com/raw/iZ64yzjE"))()
+        end)
+        if not success then
+            print("Error executing Local Player: " .. err)
+        end
     end
 })
 
@@ -70,7 +85,12 @@ GamesSection:AddButton({
     confirm = true,
     callback = function()
         print("Executed FE Bypass!")
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/g00lXploiter/g00lXploiter/main/Fe%20bypass", true))()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/g00lXploiter/g00lXploiter/main/Fe%20bypass", true))()
+        end)
+        if not success then
+            print("Error executing FE Bypass: " .. err)
+        end
     end
 })
 
@@ -84,7 +104,12 @@ ScriptsSection:AddButton({
     confirm = true,
     callback = function()
         print("Executed Infinite Yield!")
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+        end)
+        if not success then
+            print("Error executing Infinite Yield: " .. err)
+        end
     end
 })
 
@@ -95,7 +120,12 @@ ScriptsSection:AddButton({
     confirm = true,
     callback = function()
         print("Executed Dark Dex!")
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
+        end)
+        if not success then
+            print("Error executing Dark Dex: " .. err)
+        end
     end
 })
 
@@ -106,7 +136,12 @@ ScriptsSection:AddButton({
     confirm = true,
     callback = function()
         print("Executed Chat Bypass!")
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/AlgariBot/lua/refs/heads/Lua-Script-Executor/LocalNeverPatchedBypass.txt"))()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/AlgariBot/lua/refs/heads/Lua-Script-Executor/LocalNeverPatchedBypass.txt"))()
+        end)
+        if not success then
+            print("Error executing Chat Bypass: " .. err)
+        end
     end
 })
 
@@ -117,7 +152,12 @@ ScriptsSection:AddButton({
     confirm = true,
     callback = function()
         print("Executed FE Trolling GUI!")
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/yofriendfromschool1/Sky-Hub/main/FE%20Trolling%20GUI.luau"))()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/yofriendfromschool1/Sky-Hub/main/FE%20Trolling%20GUI.luau"))()
+        end)
+        if not success then
+            print("Error executing FE Trolling GUI: " .. err)
+        end
     end
 })
 
@@ -205,58 +245,45 @@ ServerSection:AddButton({
         -- Attempt to hop to a new server
         if #servers > 0 then
             local randomServerId = servers[math.random(1, #servers)]
-            TeleportService:TeleportToPlaceInstance(PlaceId, randomServerId)
+            TeleportService:TeleportToPlaceInstance(PlaceId, randomServerId, game.Players.LocalPlayer)
         else
-            library:SendNotification("No other servers available to hop to!", 3)
+            library:SendNotification("No servers available for hopping!", 3)
         end
     end
 })
 
 -- Misc Tab
-local MiscSection = MiscTab:AddSection("Miscellaneous Features", 1)
+local MiscSection = MiscTab:AddSection("Miscellaneous", 1)
 
-MiscSection:AddToggle({
-    text = "Enable Infinite Jump",
-    state = false,
-    flag = "InfiniteJump",
-    callback = function(v)
-        if v then
-            print("Infinite Jump Enabled")
-        else
-            print("Infinite Jump Disabled")
-        end
+MiscSection:AddButton({
+    enabled = true,
+    text = "Explore Other Scripts",
+    tooltip = "Explore a wide range of scripts available",
+    callback = function()
+        print("Exploring other scripts!")
     end
 })
 
 -- Changelog Tab
-local ChangelogSection = ChangelogTab:AddSection("Updates", 1)
+local ChangelogSection = ChangelogTab:AddSection("Changelog", 1)
 
-ChangelogSection:AddLabel("Version 1.0 - This is the new version of BMF Hub!")
-ChangelogSection:AddLabel("Version 1.0 - We had to remake our entire script hub, due to Orion Library getting hacked...")
-ChangelogSection:AddLabel("Version 1.0 - We apologize!")
-ChangelogSection:AddLabel("Version 1.0 - We'll slowly add back all of the scripts, as we test them first.")
+ChangelogSection:AddText({
+    text = "Version 1.0: Initial release",
+})
 
--- Join our Discord Tab
-local DiscordSection = DiscordTab:AddSection("Join Our Community", 1)
-
-DiscordSection:AddButton({
-    enabled = true,
-    text = "Join Discord",
-    tooltip = "Click to copy the invite link",
+-- Discord Tab
+DiscordTab:AddButton({
+    text = "Join our Discord!",
     callback = function()
-        setclipboard("https://discord.gg/Prg2MNanTY") 
-        library:SendNotification("Discord invite copied to clipboard!", 3)
+        print("Redirecting to Discord")
+        -- Optional: Add a Discord invite link here if available
     end
 })
 
 -- Credits Tab
-local CreditsSection = CreditsTab:AddSection("Developer Credits", 1)
+CreditsTab:AddText({
+    text = "BMF Hub | Created by Developer X",
+})
 
-CreditsSection:AddLabel("Made by: BMF")
-CreditsSection:AddLabel("Special Thanks: UnlimitedSkys")
-
--- Notification
-local Time = (string.format("%."..tostring(Decimals).."f", os.clock() - Clock))
-library:SendNotification(("Loaded In "..tostring(Time)), 6)
-
--- Done
+-- Final Initialization
+library:Update()
