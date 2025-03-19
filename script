@@ -6,7 +6,7 @@ local Window = OrionLib:MakeWindow({Name = "BMF Hub", HidePremium = false, SaveC
 
 local GamesTab = Window:MakeTab({
     Name = "Games",
-    Icon = "rbxassetid://0",
+    Icon = "",
     PremiumOnly = false
 })
 
@@ -1985,7 +1985,7 @@ GamesTab:AddButton({
 
 local ScriptsTab = Window:MakeTab({
     Name = "Scripts",
-    Icon = "rbxassetid://0",
+    Icon = "",
     PremiumOnly = false
 })
 
@@ -2123,7 +2123,7 @@ ScriptsTab:AddButton({
 
 local PlayerTab = Window:MakeTab({
     Name = "Local Player",
-    Icon = "rbxassetid://0",
+    Icon = "",
     PremiumOnly = false
 })
 
@@ -2350,7 +2350,7 @@ PlayerTab:AddButton({
 
 local OtherTab = Window:MakeTab({
     Name = "Misc",
-    Icon = "rbxassetid://0",
+    Icon = "",
     PremiumOnly = false
 })
 
@@ -2407,7 +2407,7 @@ OtherTab:AddButton({
 
 local ServerTab = Window:MakeTab({
     Name = "Server",
-    Icon = "rbxassetid://0",
+    Icon = "",
     PremiumOnly = false
 })
 
@@ -2432,7 +2432,7 @@ ServerSection:AddButton({
 
 local CreditsTab = Window:MakeTab({
     Name = "Credits",
-    Icon = "rbxassetid://0",
+    Icon = "",
     PremiumOnly = false
 })
 
@@ -2446,7 +2446,7 @@ CreditsSection:AddLabel("Developer: UnlimitedSkys")
 
 local DiscordTab = Window:MakeTab({
     Name = "Join our Discord!",
-    Icon = "rbxassetid://0",
+    Icon = "",
     PremiumOnly = false
 })
 
