@@ -1,5 +1,5 @@
 -- Roblox Lua Script for "BMF Hub" (By BMF)
--- Clean script hub using same UI from Granny Multiplayer script
+-- Thanks for using!
 
 -- Variables
 local Players = game:GetService("Players")
@@ -154,4 +154,8 @@ end)
 
 createButton("The Intruder - Hospital", function()
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/The-Intruder-Hospital/refs/heads/main/Script'))()
+end)
+
+createButton("The Intruder - Subway", function()
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/The-Intruder-Subway/refs/heads/main/Script'))()
 end)
