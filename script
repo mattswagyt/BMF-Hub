@@ -1,4 +1,4 @@
--- BMF Hub
+-- BMF Hub (Clean, Perfectly Sized)
 
 -- Services
 local Players = game:GetService("Players")
@@ -47,6 +47,7 @@ screenGui.Name = "BMF_Hub_GUI"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = PlayerGui
 
+-- Main Frame
 local main = Instance.new("Frame")
 main.Name = "Main"
 main.Size = UDim2.new(0, 720, 0, 420)
@@ -116,7 +117,7 @@ keyHint.TextSize = 14
 keyHint.TextXAlignment = Enum.TextXAlignment.Right
 keyHint.Parent = header
 
--- Sidebar
+-- Sidebar (Left Tabs)
 local sidebar = Instance.new("Frame")
 sidebar.Size = UDim2.new(0, 150, 1, -56)
 sidebar.Position = UDim2.new(0, 0, 0, 56)
@@ -128,90 +129,15 @@ local leftTabs = {"Main","Local Player","Server","Other Scripts","Join our Disco
 local leftTabButtons = {}
 local activeLeft = "Main"
 
-local layout = Instance.new("UIListLayout")
-layout.Parent = sidebar
-layout.Padding = UDim.new(0,8)
-layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+local sidebarLayout = Instance.new("UIListLayout")
+sidebarLayout.Parent = sidebar
+sidebarLayout.Padding = UDim.new(0,8)
+sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
--- Single scrolling frame for content & buttons
-local mainScroll = Instance.new("ScrollingFrame")
-mainScroll.Size = UDim2.new(1, -150, 1, -56)
-mainScroll.Position = UDim2.new(0, 150, 0, 56)
-mainScroll.BackgroundColor3 = Color3.fromRGB(20,20,22)
-mainScroll.ScrollBarThickness = 8
-mainScroll.Parent = main
-makeUICorner(mainScroll, 10)
-
-local mainLayout = Instance.new("UIListLayout")
-mainLayout.Padding = UDim.new(0,8)
-mainLayout.Parent = mainScroll
-
-local function updateMainCanvas()
-    RunService.Heartbeat:Wait()
-    local total = 0
-    for _,child in ipairs(mainScroll:GetChildren()) do
-        if child:IsA("GuiObject") and child ~= mainLayout then
-            total = total + child.AbsoluteSize.Y + 8
-        end
-    end
-    mainScroll.CanvasSize = UDim2.new(0,0,0,math.max(total,mainScroll.AbsoluteWindowSize.Y))
-end
-
--- WIP Button
-local function makeWIPButton(text)
-    local b = Instance.new("TextButton")
-    b.Size = UDim2.new(1,-20,0,36)
-    b.Position = UDim2.new(0,10,0,0)
-    b.BackgroundColor3 = Color3.fromRGB(30,20,20)
-    b.TextColor3 = TEXT
-    b.Text = text or "WIP!"
-    b.Font = Enum.Font.GothamSemibold
-    b.TextSize = 16
-    makeUICorner(b,8)
-    b.Parent = mainScroll
-    b.MouseButton1Click:Connect(function()
-        print("WIP!")
-        errorLog.Text = "Status: Executed '"..b.Text.."' (WIP)"
-    end)
-    updateMainCanvas()
-end
-
--- Left tab logic
-for _,name in ipairs(leftTabs) do
-    local t = Instance.new("TextButton")
-    t.Size = UDim2.new(0.92,0,0,40)
-    t.BackgroundColor3 = Color3.fromRGB(35,6,6)
-    t.Text = name
-    t.TextColor3 = TEXT
-    t.Font = Enum.Font.GothamBold
-    t.TextSize = 16
-    makeUICorner(t,8)
-    t.Parent = sidebar
-
-    leftTabButtons[name] = t
-
-    t.MouseButton1Click:Connect(function()
-        activeLeft = name
-        for n,btn in pairs(leftTabButtons) do
-            btn.BackgroundColor3 = (n==activeLeft) and Color3.fromRGB(80,10,10) or Color3.fromRGB(35,6,6)
-            btn.TextColor3 = (n==activeLeft) and ACCENT or TEXT
-        end
-        -- Clear main scroll & add buttons
-        for _,child in ipairs(mainScroll:GetChildren()) do
-            if child ~= mainLayout then child:Destroy() end
-        end
-        for i=1,10 do makeWIPButton("WIP!") end
-        errorLog.Text = "Status: Selected Left Tab '"..name.."'"
-    end)
-end
-
-leftTabButtons[activeLeft].BackgroundColor3 = Color3.fromRGB(80,10,10)
-leftTabButtons[activeLeft].TextColor3 = ACCENT
-
--- Top tabs
+-- Top Tabs
 local topBar = Instance.new("Frame")
 topBar.Size = UDim2.new(1,-150,0,62)
-topBar.Position = UDim2.new(0,150,0,0)
+topBar.Position = UDim2.new(0,150,0,56)
 topBar.BackgroundTransparency = 1
 topBar.Parent = main
 
@@ -249,6 +175,82 @@ local topTabs = {"FPS","PVP","Grinding","Building","Stories","Horror","Roleplay"
 local topTabButtons = {}
 local activeTop = "FPS"
 
+-- Content Scroll (single scrolling frame)
+local mainScroll = Instance.new("ScrollingFrame")
+mainScroll.Size = UDim2.new(1,-150,1, -118) -- fits below topBar and sidebar
+mainScroll.Position = UDim2.new(0,150,0,118)
+mainScroll.BackgroundColor3 = Color3.fromRGB(20,20,22)
+mainScroll.ScrollBarThickness = 8
+mainScroll.Parent = main
+makeUICorner(mainScroll, 10)
+
+local mainLayout = Instance.new("UIListLayout")
+mainLayout.Padding = UDim.new(0,8)
+mainLayout.Parent = mainScroll
+
+-- Helper to update canvas
+local function updateMainCanvas()
+    RunService.Heartbeat:Wait()
+    local total = 0
+    for _,child in ipairs(mainScroll:GetChildren()) do
+        if child:IsA("GuiObject") and child ~= mainLayout then
+            total = total + child.AbsoluteSize.Y + 8
+        end
+    end
+    mainScroll.CanvasSize = UDim2.new(0,0,0,math.max(total,mainScroll.AbsoluteWindowSize.Y))
+end
+
+-- WIP Button
+local function makeWIPButton(text)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1,-20,0,36)
+    b.Position = UDim2.new(0,10,0,0)
+    b.BackgroundColor3 = Color3.fromRGB(30,20,20)
+    b.TextColor3 = TEXT
+    b.Text = text or "WIP!"
+    b.Font = Enum.Font.GothamSemibold
+    b.TextSize = 16
+    makeUICorner(b,8)
+    b.Parent = mainScroll
+    b.MouseButton1Click:Connect(function()
+        print("WIP!")
+        errorLog.Text = "Status: Executed '"..b.Text.."' (WIP)"
+    end)
+    updateMainCanvas()
+end
+
+-- Populate Left Tabs
+for _,name in ipairs(leftTabs) do
+    local t = Instance.new("TextButton")
+    t.Size = UDim2.new(0.92,0,0,40)
+    t.BackgroundColor3 = Color3.fromRGB(35,6,6)
+    t.Text = name
+    t.TextColor3 = TEXT
+    t.Font = Enum.Font.GothamBold
+    t.TextSize = 16
+    makeUICorner(t,8)
+    t.Parent = sidebar
+    leftTabButtons[name] = t
+
+    t.MouseButton1Click:Connect(function()
+        activeLeft = name
+        for n,btn in pairs(leftTabButtons) do
+            btn.BackgroundColor3 = (n==activeLeft) and Color3.fromRGB(80,10,10) or Color3.fromRGB(35,6,6)
+            btn.TextColor3 = (n==activeLeft) and ACCENT or TEXT
+        end
+        -- Clear content
+        for _,child in ipairs(mainScroll:GetChildren()) do
+            if child ~= mainLayout then child:Destroy() end
+        end
+        for i=1,10 do makeWIPButton("WIP!") end
+        errorLog.Text = "Status: Selected Left Tab '"..name.."'"
+    end)
+end
+
+leftTabButtons[activeLeft].BackgroundColor3 = Color3.fromRGB(80,10,10)
+leftTabButtons[activeLeft].TextColor3 = ACCENT
+
+-- Populate Top Tabs
 for _,name in ipairs(topTabs) do
     local b = Instance.new("TextButton")
     b.Size = UDim2.new(0,110,1,0)
@@ -259,7 +261,6 @@ for _,name in ipairs(topTabs) do
     b.TextSize = 14
     makeUICorner(b,8)
     b.Parent = topScroll
-
     topTabButtons[name] = b
 
     b.MouseButton1Click:Connect(function()
@@ -268,7 +269,7 @@ for _,name in ipairs(topTabs) do
             bt.BackgroundColor3 = (n==activeTop) and Color3.fromRGB(80,10,10) or Color3.fromRGB(35,8,8)
             bt.TextColor3 = (n==activeTop) and ACCENT or TEXT
         end
-        -- Clear main scroll & add buttons
+        -- Clear content
         for _,child in ipairs(mainScroll:GetChildren()) do
             if child ~= mainLayout then child:Destroy() end
         end
@@ -280,7 +281,7 @@ end
 topTabButtons[activeTop].BackgroundColor3 = Color3.fromRGB(80,10,10)
 topTabButtons[activeTop].TextColor3 = ACCENT
 
--- Resize top scroll canvas
+-- Top Scroll Canvas
 local function updateTopCanvas()
     RunService.Heartbeat:Wait()
     local width = 0
