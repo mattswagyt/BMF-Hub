@@ -1,161 +1,407 @@
--- Roblox Lua Script for "BMF Hub" (By BMF)
--- Thanks for using!
+-- BMF Hub
 
--- Variables
+-- Services
 local Players = game:GetService("Players")
-local StarterGui = game:GetService("StarterGui")
-local UIS = game:GetService("UserInputService")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- Create UI Elements
-local ScreenGui = Instance.new("ScreenGui")
-local MainFrame = Instance.new("Frame")
-local Title = Instance.new("TextLabel")
-local ErrorLog = Instance.new("TextLabel")
-local UIListLayout = Instance.new("UIListLayout")
-
--- UI Properties
-ScreenGui.Parent = PlayerGui
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Name = "BMFHubUI"
-
-MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.Size = UDim2.new(0, 300, 0, 400)
-MainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
-MainFrame.Active = true
-MainFrame.Draggable = true
-MainFrame.Visible = true
-
-Title.Parent = MainFrame
-Title.Text = "BMF Hub"
-Title.Size = UDim2.new(1, 0, 0, 30)
-Title.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.SourceSansBold
-Title.TextSize = 18
-
-ErrorLog.Parent = MainFrame
-ErrorLog.Text = "Status: Ready"
-ErrorLog.Size = UDim2.new(1, 0, 0, 30)
-ErrorLog.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-ErrorLog.TextColor3 = Color3.fromRGB(85, 255, 85)
-ErrorLog.Font = Enum.Font.SourceSans
-ErrorLog.TextSize = 14
-ErrorLog.TextWrapped = true
-ErrorLog.TextYAlignment = Enum.TextYAlignment.Top
-
-UIListLayout.Parent = MainFrame
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
--- ✅ Toggle UI with Insert key
-UIS.InputBegan:Connect(function(input, processed)
-	if not processed and input.KeyCode == Enum.KeyCode.Insert then
-		MainFrame.Visible = not MainFrame.Visible
-	end
-end)
-
--- ✅ Function to create buttons
-local function createButton(name, callback)
-	local Button = Instance.new("TextButton")
-	Button.Parent = MainFrame
-	Button.Text = name
-	Button.Size = UDim2.new(1, 0, 0, 30)
-	Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Button.Font = Enum.Font.SourceSans
-	Button.TextSize = 16
-	Button.MouseButton1Click:Connect(function()
-		pcall(callback)
-	end)
-	return Button
+-- Clean up any existing GUI with same name
+for _,v in ipairs(PlayerGui:GetChildren()) do
+    if v.Name == "BMF_Hub_GUI" then v:Destroy() end
 end
 
--- ✅ Notification when script loads
-StarterGui:SetCore("SendNotification", {
-	Title = "BMF Hub loaded!",
-	Text = "Ready to execute your scripts.",
-	Duration = 8,
-})
+-- Colors
+local ACCENT = Color3.fromRGB(200, 20, 20)    -- red
+local DARK = Color3.fromRGB(18,18,20)         -- dark panel
+local DARKER = Color3.fromRGB(12,12,14)       -- header / subtle
+local TEXT = Color3.fromRGB(240,240,240)      -- text
 
--- ✅ Create buttons 
-createButton("Infinite Yield", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+-- Helpers
+local function makeUICorner(inst, radius)
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, radius or 8)
+    c.Parent = inst
+    return c
+end
+
+local function makeShadow(parent)
+    local shadow = Instance.new("ImageLabel")
+    shadow.Name = "Shadow"
+    shadow.Size = UDim2.new(1, 20, 1, 20)
+    shadow.Position = UDim2.new(0, -10, 0, -10)
+    shadow.BackgroundTransparency = 1
+    shadow.Image = "rbxassetid://6014261993"
+    shadow.ScaleType = Enum.ScaleType.Slice
+    shadow.SliceCenter = Rect.new(10,10,118,118)
+    shadow.ImageColor3 = Color3.new(0,0,0)
+    shadow.ImageTransparency = 0.75
+    shadow.Parent = parent
+    return shadow
+end
+
+-- Main ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BMF_Hub_GUI"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = PlayerGui
+
+-- Main window
+local main = Instance.new("Frame")
+main.Name = "Main"
+main.Size = UDim2.new(0, 720, 0, 420)
+main.Position = UDim2.new(0.5, -360, 0.5, -210)
+main.AnchorPoint = Vector2.new(0.5,0.5)
+main.BackgroundColor3 = DARK
+makeUICorner(main, 14)
+main.Parent = screenGui
+makeShadow(main)
+
+-- Draggable implementation (drag anywhere on header)
+local dragging, dragStart, startPos = false, nil, nil
+local RunConn
+local function makeDraggable(target, handle)
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = target.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    handle.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            if dragging and dragStart and startPos then
+                local delta = input.Position - dragStart
+                target.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+            end
+        end
+    end)
+end
+
+-- Header
+local header = Instance.new("Frame")
+header.Name = "Header"
+header.Size = UDim2.new(1, 0, 0, 56)
+header.BackgroundColor3 = DARKER
+header.Parent = main
+makeUICorner(header, 14)
+
+local title = Instance.new("TextLabel")
+title.Name = "Title"
+title.Size = UDim2.new(0.6, -16, 1, 0)
+title.Position = UDim2.new(0, 12, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "BMF Hub"
+title.TextColor3 = ACCENT
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = header
+
+local errorLog = Instance.new("TextLabel")
+errorLog.Name = "ErrorLog"
+errorLog.Size = UDim2.new(0.55, -20, 0, 18)
+errorLog.Position = UDim2.new(0, 12, 1, -22)
+errorLog.BackgroundTransparency = 1
+errorLog.Text = "Status: OK"
+errorLog.TextColor3 = Color3.fromRGB(230,120,120)
+errorLog.Font = Enum.Font.Gotham
+errorLog.TextSize = 14
+errorLog.TextXAlignment = Enum.TextXAlignment.Left
+errorLog.Parent = header
+
+local keyHint = Instance.new("TextLabel")
+keyHint.Name = "KeyHint"
+keyHint.Size = UDim2.new(0, 160, 1, 0)
+keyHint.Position = UDim2.new(1, -166, 0, 0)
+keyHint.BackgroundTransparency = 1
+keyHint.Text = "Toggle: Insert"
+keyHint.TextColor3 = TEXT
+keyHint.Font = Enum.Font.Gotham
+keyHint.TextSize = 14
+keyHint.TextXAlignment = Enum.TextXAlignment.Right
+keyHint.Parent = header
+
+makeDraggable(main, header)
+
+-- Left sidebar
+local sidebar = Instance.new("Frame")
+sidebar.Name = "Sidebar"
+sidebar.Size = UDim2.new(0, 150, 1, -56)
+sidebar.Position = UDim2.new(0, 0, 0, 56)
+sidebar.BackgroundColor3 = Color3.fromRGB(22,16,16)
+sidebar.Parent = main
+makeUICorner(sidebar, 12)
+
+-- Top tabs container (ribbon)
+local topBar = Instance.new("Frame")
+topBar.Name = "TopBar"
+topBar.Size = UDim2.new(1, -170, 0, 62)
+topBar.Position = UDim2.new(0, 170, 0, 56)
+topBar.BackgroundTransparency = 1
+topBar.Parent = main
+
+-- Left / Right arrow buttons for top ribbon
+local leftArrow = Instance.new("TextButton")
+leftArrow.Name = "LeftArrow"
+leftArrow.Size = UDim2.new(0, 30, 0, 30)
+leftArrow.Position = UDim2.new(0, -6, 0, 16)
+leftArrow.AnchorPoint = Vector2.new(0,0)
+leftArrow.BackgroundColor3 = DARKER
+leftArrow.Text = "<"
+leftArrow.TextColor3 = TEXT
+leftArrow.Parent = topBar
+makeUICorner(leftArrow, 8)
+
+local rightArrow = Instance.new("TextButton")
+rightArrow.Name = "RightArrow"
+rightArrow.Size = UDim2.new(0, 30, 0, 30)
+rightArrow.Position = UDim2.new(1, -30 + 6, 0, 16)
+rightArrow.AnchorPoint = Vector2.new(1,0)
+rightArrow.BackgroundColor3 = DARKER
+rightArrow.Text = ">"
+rightArrow.TextColor3 = TEXT
+rightArrow.Parent = topBar
+makeUICorner(rightArrow, 8)
+
+-- Top tabs scrolling frame
+local topScroll = Instance.new("ScrollingFrame")
+topScroll.Name = "TopScroll"
+topScroll.Size = UDim2.new(1, -60, 1, 0)
+topScroll.Position = UDim2.new(0, 36, 0, 0)
+topScroll.BackgroundTransparency = 1
+topScroll.ScrollBarThickness = 6
+topScroll.Parent = topBar
+
+local topList = Instance.new("UIListLayout")
+topList.FillDirection = Enum.FillDirection.Horizontal
+topList.Padding = UDim.new(0, 8)
+topList.Parent = topScroll
+
+-- Content area
+local content = Instance.new("ScrollingFrame")
+content.Name = "Content"
+content.Size = UDim2.new(1, -170, 1, -128)
+content.Position = UDim2.new(0, 170, 0, 128)
+content.BackgroundColor3 = Color3.fromRGB(20,20,22)
+content.ScrollBarThickness = 8
+content.Parent = main
+makeUICorner(content, 10)
+
+local contentLayout = Instance.new("UIListLayout")
+contentLayout.Parent = content
+contentLayout.Padding = UDim.new(0,8)
+contentLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+-- Function to update content canvas size
+local function updateContentCanvas()
+    RunService.Heartbeat:Wait()
+    local size = 0
+    for _,child in ipairs(content:GetChildren()) do
+        if child:IsA("GuiObject") and child ~= contentLayout then
+            size = size + child.AbsoluteSize.Y + 8
+        end
+    end
+    content.CanvasSize = UDim2.new(0, 0, 0, math.max(size, content.AbsoluteWindowSize.Y))
+end
+
+-- Factory for WIP buttons
+local function makeWIPButton(labelText)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, -20, 0, 36)
+    btn.Position = UDim2.new(0, 10, 0, 0)
+    btn.BackgroundColor3 = Color3.fromRGB(30, 20, 20)
+    btn.BorderSizePixel = 0
+    btn.TextColor3 = TEXT
+    btn.Font = Enum.Font.GothamSemibold
+    btn.TextSize = 16
+    btn.Text = labelText or "WIP!"
+    makeUICorner(btn, 8)
+    btn.Parent = content
+
+    btn.MouseEnter:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(45,18,18)}):Play()
+    end)
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(30,20,20)}):Play()
+    end)
+
+    btn.MouseButton1Click:Connect(function()
+        print("WIP!")
+        pcall(function() errorLog.Text = "Status: Executed '"..tostring(btn.Text).."' (WIP)" end)
+    end)
+
+    return btn
+end
+
+-- Left tabs setup
+local leftTabs = {"Main","Local Player","Server","Other Scripts","Join our Discord!"}
+local leftTabButtons = {}
+local activeLeft = "Main"
+
+local leftLayout = Instance.new("UIListLayout")
+leftLayout.Parent = sidebar
+leftLayout.Padding = UDim.new(0,8)
+leftLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+leftLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+for i, name in ipairs(leftTabs) do
+    local b = Instance.new("TextButton")
+    b.Name = name .. "Tab"
+    b.Size = UDim2.new(0.92, 0, 0, 40)
+    b.Position = UDim2.new(0, 0, 0, 6 + (i-1)*46)
+    b.BackgroundColor3 = Color3.fromRGB(35,6,6)
+    b.BorderSizePixel = 0
+    b.Text = name
+    b.Font = Enum.Font.GothamBold
+    b.TextSize = 16
+    b.TextColor3 = TEXT
+    b.AutomaticSize = Enum.AutomaticSize.None
+    b.Parent = sidebar
+    makeUICorner(b, 8)
+
+    leftTabButtons[name] = b
+
+    b.MouseButton1Click:Connect(function()
+        if activeLeft == name then return end
+        activeLeft = name
+        -- highlight
+        for t,btn in pairs(leftTabButtons) do
+            btn.BackgroundColor3 = (t==activeLeft) and Color3.fromRGB(80,10,10) or Color3.fromRGB(35,6,6)
+            btn.TextColor3 = (t==activeLeft) and ACCENT or TEXT
+        end
+        -- rebuild content based on left + activeTop
+        pcall(function() errorLog.Text = "Status: Selected Left Tab '"..activeLeft.."'" end)
+        -- trigger refresh
+        if screenGui:GetAttribute("activeTop") then
+            -- call refresh function (defined later)
+        end
+        -- populate sample WIP buttons
+        content:ClearAllChildren()
+        for i=1,10 do
+            makeWIPButton("WIP!")
+        end
+        updateContentCanvas()
+    end)
+end
+
+-- Top tabs list
+local topTabs = {"FPS","PVP","Grinding","Building","Stories","Horror","Roleplay","Simulators","FE Scripts","Trolling","Admin"}
+local topTabButtons = {}
+local activeTop = "FPS"
+
+for i,name in ipairs(topTabs) do
+    local tbtn = Instance.new("TextButton")
+    tbtn.Name = "Top_"..name
+    tbtn.Size = UDim2.new(0, 110, 1, 0)
+    tbtn.BackgroundColor3 = Color3.fromRGB(35,8,8)
+    tbtn.BorderSizePixel = 0
+    tbtn.Text = name
+    tbtn.TextColor3 = TEXT
+    tbtn.Font = Enum.Font.GothamSemibold
+    tbtn.TextSize = 14
+    tbtn.Parent = topScroll
+    makeUICorner(tbtn, 8)
+
+    topTabButtons[name] = tbtn
+
+    tbtn.MouseButton1Click:Connect(function()
+        if activeTop == name then return end
+        activeTop = name
+        -- highlight
+        for k,btn in pairs(topTabButtons) do
+            btn.BackgroundColor3 = (k==activeTop) and Color3.fromRGB(80,10,10) or Color3.fromRGB(35,8,8)
+            btn.TextColor3 = (k==activeTop) and ACCENT or TEXT
+        end
+        pcall(function() errorLog.Text = "Status: Selected Top Tab '"..activeTop.."'" end)
+
+        -- populate content for current left + top
+        content:ClearAllChildren()
+        -- As requested, put WIP buttons under each tab
+        for i=1,12 do
+            makeWIPButton("WIP!")
+        end
+        updateContentCanvas()
+    end)
+end
+
+-- Initialize visuals for active tabs
+leftTabButtons[activeLeft].BackgroundColor3 = Color3.fromRGB(80,10,10)
+leftTabButtons[activeLeft].TextColor3 = ACCENT
+topTabButtons[activeTop].BackgroundColor3 = Color3.fromRGB(80,10,10)
+topTabButtons[activeTop].TextColor3 = ACCENT
+
+-- Initial populate content
+content:ClearAllChildren()
+for i=1,12 do makeWIPButton("WIP!") end
+updateContentCanvas()
+
+-- Top arrow navigation logic (smooth scroll)
+local function tweenTopScroll(toX)
+    local target = math.clamp(toX, 0, math.max(0, topScroll.CanvasSize.X.Offset - topScroll.AbsoluteWindowSize.X))
+    TweenService:Create(topScroll, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {CanvasPosition = Vector2.new(target,0)}):Play()
+end
+
+leftArrow.MouseButton1Click:Connect(function()
+    local offset = math.max(0, topScroll.CanvasPosition.X - (topScroll.AbsoluteWindowSize.X * 0.6))
+    tweenTopScroll(offset)
+end)
+rightArrow.MouseButton1Click:Connect(function()
+    local offset = topScroll.CanvasPosition.X + (topScroll.AbsoluteWindowSize.X * 0.6)
+    tweenTopScroll(offset)
 end)
 
-createButton("Dark Dex", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
+-- Also allow clicking scroll area to focus center tab
+for name,btn in pairs(topTabButtons) do
+    btn.MouseButton1Click:Connect(function()
+        -- center clicked tab in view
+        local absPos = btn.AbsolutePosition.X - topScroll.AbsolutePosition.X
+        local center = topScroll.AbsoluteWindowSize.X / 2
+        local desired = topScroll.CanvasPosition.X + absPos - center + (btn.AbsoluteSize.X/2)
+        tweenTopScroll(desired)
+    end)
+end
+
+-- Input: Toggle UI with Insert key
+local uiVisible = true
+UserInputService.InputBegan:Connect(function(input, processed)
+    if processed then return end
+    if input.KeyCode == Enum.KeyCode.Insert then
+        uiVisible = not uiVisible
+        main.Visible = uiVisible
+        if uiVisible then
+            pcall(function() errorLog.Text = "Status: OK" end)
+        end
+    end
 end)
 
-createButton("Chat Script", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/AnnaRoblox/AnnaBypasser/refs/heads/main/AnnaBypasser.lua",true))() 
+-- Small title glow animation
+spawn(function()
+    while true do
+        TweenService:Create(title, TweenInfo.new(1.0, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {TextColor3 = Color3.fromRGB(255,80,80)}):Play()
+        wait(1.0)
+        TweenService:Create(title, TweenInfo.new(1.0, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {TextColor3 = ACCENT}):Play()
+        wait(1.0)
+    end
 end)
 
-createButton("Prison Life Admin 1", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/elliexmln/PrizzLife/main/pladmin.lua'))()
+-- Content auto-refresh loop for Canvas sizing safety
+spawn(function()
+    while true do
+        pcall(updateContentCanvas)
+        wait(0.8)
+    end
 end)
 
-createButton("Prison Life Admin 2", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/SkidMaster999/RobloxScript/refs/heads/main/Game/PrisonLife/PissAdmin.lua"))()
-end)
-
-createButton("Piggy Script", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/BMF-Piggy/refs/heads/main/Script'))()
-end)
-
-createButton("MM2 Script", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/Au0yX/Community/main/XhubMM2"))()
-end)
-
-createButton("Brookhaven Script 1", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/sXPiterXs1111/SanderXV2.65/main/sanderXNewV2.65.lua'))()
-end)
-
-createButton("Brookhaven Script 2", function()
-	loadstring(game:HttpGet("https://pastefy.app/ZRa0sDZa/raw"))()
-end)
-
-createButton("Brookhaven Script 3", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/TheDarkoneMarcillisePex/Other-Scripts/main/Brook%20Haven%20Gui'))()
-end)
-
-createButton("Flee the Facility - FTF HAX", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/LeviTheOtaku/roblox-scripts/main/FTFHAX.lua",true))()
-end)
-
-createButton("Flee the Facility - Luaware", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/bedra45/Random-games-xd/main/bedraFtfFinalGUI"))()
-end)
-
-createButton("Granny Multiplayer - Chapter 1", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/Granny-Multiplayer-Chapter-1/refs/heads/main/Script'))()
-end)
-
-createButton("Granny Multiplayer - Chapter 2", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/mattswagyt/Granny-Multiplayer-Chapter-2/refs/heads/main/Script"))()
-end)
-
-createButton("Eyes the Horror Game", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/eyes-the-horror-game/refs/heads/main/Script'))()
-end)
-
-createButton("The Intruder - House", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/The-Intruder-House-Script/refs/heads/main/Script'))()
-end)
-
-createButton("The Intruder - Mall", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/Intruder-Mall/refs/heads/main/Script'))()
-end)
-
-createButton("The Intruder - Mineshaft", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/The-Intruder-Mineshaft/refs/heads/main/Script'))()
-end)
-
-createButton("The Intruder - Hospital", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/The-Intruder-Hospital/refs/heads/main/Script'))()
-end)
-
-createButton("The Intruder - Subway", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/The-Intruder-Subway/refs/heads/main/Script'))()
-end)
+-- Final note
+print("[BMF Hub] UI loaded. Toggle with Insert. Buttons are placeholders (WIP!).")
+errorLog.Text = "Status: Loaded BMF Hub (WIP)"
