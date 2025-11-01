@@ -1,4 +1,4 @@
--- BMF Hub
+-- BMF Hub (No Top Tabs Version)
 
 -- Services
 local Players = game:GetService("Players")
@@ -9,7 +9,7 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- Clean up old UI
+-- Remove old UI
 for _,v in ipairs(PlayerGui:GetChildren()) do
     if v.Name == "BMF_Hub_GUI" then v:Destroy() end
 end
@@ -20,45 +20,26 @@ local DARK = Color3.fromRGB(18,18,20)
 local DARKER = Color3.fromRGB(12,12,14)
 local TEXT = Color3.fromRGB(240,240,240)
 
--- Helpers
-local function makeUICorner(inst, radius)
+local function makeUICorner(inst, r)
     local c = Instance.new("UICorner")
-    c.CornerRadius = UDim.new(0, radius or 8)
+    c.CornerRadius = UDim.new(0, r or 8)
     c.Parent = inst
 end
 
-local function makeShadow(parent)
-    local shadow = Instance.new("ImageLabel")
-    shadow.Name = "Shadow"
-    shadow.Size = UDim2.new(1, 20, 1, 20)
-    shadow.Position = UDim2.new(0, -10, 0, -10)
-    shadow.BackgroundTransparency = 1
-    shadow.Image = "rbxassetid://6014261993"
-    shadow.ScaleType = Enum.ScaleType.Slice
-    shadow.SliceCenter = Rect.new(10,10,118,118)
-    shadow.ImageColor3 = Color3.new(0,0,0)
-    shadow.ImageTransparency = 0.75
-    shadow.Parent = parent
-end
-
--- GUI
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "BMF_Hub_GUI"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = PlayerGui
 
--- Main Frame
 local main = Instance.new("Frame")
-main.Name = "Main"
-main.Size = UDim2.new(0, 720, 0, 450) -- slightly shorter than before
-main.Position = UDim2.new(0.5, -360, 0.5, -225)
+main.Size = UDim2.new(0, 750, 0, 470)
+main.Position = UDim2.new(0.5, -375, 0.5, -235)
 main.AnchorPoint = Vector2.new(0.5,0.5)
 main.BackgroundColor3 = DARK
 makeUICorner(main, 14)
 main.Parent = screenGui
-makeShadow(main)
 
--- Draggable
+-- Dragging
 local dragging, dragStart, startPos = false, nil, nil
 main.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -79,36 +60,25 @@ end)
 
 -- Header
 local header = Instance.new("Frame")
-header.Size = UDim2.new(1, 0, 0, 56)
+header.Size = UDim2.new(1,0,0,60)
 header.BackgroundColor3 = DARKER
 header.Parent = main
-makeUICorner(header, 14)
+makeUICorner(header,14)
 
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(0.6, -16, 1, 0)
-title.Position = UDim2.new(0, 12, 0, 0)
+title.Size = UDim2.new(1,-12,1,0)
+title.Position = UDim2.new(0,12,0,0)
 title.BackgroundTransparency = 1
 title.Text = "BMF Hub"
 title.TextColor3 = ACCENT
 title.Font = Enum.Font.GothamBold
-title.TextSize = 20
+title.TextSize = 22
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = header
 
-local errorLog = Instance.new("TextLabel")
-errorLog.Size = UDim2.new(0.55, -20, 0, 18)
-errorLog.Position = UDim2.new(0, 12, 1, -22)
-errorLog.BackgroundTransparency = 1
-errorLog.Text = "Status: OK"
-errorLog.TextColor3 = Color3.fromRGB(230,120,120)
-errorLog.Font = Enum.Font.Gotham
-errorLog.TextSize = 14
-errorLog.TextXAlignment = Enum.TextXAlignment.Left
-errorLog.Parent = header
-
 local keyHint = Instance.new("TextLabel")
-keyHint.Size = UDim2.new(0, 160, 1, 0)
-keyHint.Position = UDim2.new(1, -166, 0, 0)
+keyHint.Size = UDim2.new(0,150,1,0)
+keyHint.Position = UDim2.new(1,-160,0,0)
 keyHint.BackgroundTransparency = 1
 keyHint.Text = "Toggle: Insert"
 keyHint.TextColor3 = TEXT
@@ -117,115 +87,101 @@ keyHint.TextSize = 14
 keyHint.TextXAlignment = Enum.TextXAlignment.Right
 keyHint.Parent = header
 
--- Sidebar (Left Tabs)
-local sidebar = Instance.new("Frame")
-sidebar.Size = UDim2.new(0, 150, 1, -56)
-sidebar.Position = UDim2.new(0, 0, 0, 56)
+-- Left Scroll Tabs
+local sidebar = Instance.new("ScrollingFrame")
+sidebar.Size = UDim2.new(0,170,1,-60)
+sidebar.Position = UDim2.new(0,0,0,60)
+sidebar.ScrollBarThickness = 6
 sidebar.BackgroundColor3 = Color3.fromRGB(22,16,16)
 sidebar.Parent = main
-makeUICorner(sidebar, 12)
-
-local leftTabs = {"Main","Local Player","Server","Other Scripts","Join our Discord!"}
-local leftTabButtons = {}
-local activeLeft = "Main"
+makeUICorner(sidebar,12)
 
 local sidebarLayout = Instance.new("UIListLayout")
 sidebarLayout.Parent = sidebar
-sidebarLayout.Padding = UDim.new(0,8)
+sidebarLayout.Padding = UDim.new(0,6)
 sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
--- Top Tabs
-local topBar = Instance.new("Frame")
-topBar.Size = UDim2.new(1,-150,0,40) -- slightly smaller height
-topBar.Position = UDim2.new(0,150,0,56)
-topBar.BackgroundTransparency = 1
-topBar.Parent = main
+-- Categories (All moved here)
+local leftTabs = {
+    "Main",
+    "Local Player",
+    "Server",
+    "FPS",
+    "PVP",
+    "Grinding",
+    "Building",
+    "Stories",
+    "Horror",
+    "Roleplay",
+    "Simulators",
+    "Trolling",
+    "Admin",
+    "Other Scripts",
+    "Join our Discord!"
+}
 
-local leftArrow = Instance.new("TextButton")
-leftArrow.Size = UDim2.new(0,26,0,26)
-leftArrow.Position = UDim2.new(0,-6,0,7)
-leftArrow.BackgroundColor3 = DARKER
-leftArrow.Text = "<"
-leftArrow.TextColor3 = TEXT
-makeUICorner(leftArrow,6)
-leftArrow.Parent = topBar
+local activeLeft = "Main"
+local leftTabButtons = {}
 
-local rightArrow = Instance.new("TextButton")
-rightArrow.Size = UDim2.new(0,26,0,26)
-rightArrow.Position = UDim2.new(1,-26,0,7)
-rightArrow.BackgroundColor3 = DARKER
-rightArrow.Text = ">"
-rightArrow.TextColor3 = TEXT
-makeUICorner(rightArrow,6)
-rightArrow.Parent = topBar
+-- Center Content
+local content = Instance.new("ScrollingFrame")
+content.Size = UDim2.new(1,-170,1,-60)
+content.Position = UDim2.new(0,170,0,60)
+content.BackgroundColor3 = Color3.fromRGB(20,20,22)
+content.ScrollBarThickness = 8
+content.Parent = main
+makeUICorner(content,10)
 
-local topScroll = Instance.new("ScrollingFrame")
-topScroll.Size = UDim2.new(1,-60,1,0)
-topScroll.Position = UDim2.new(0,36,0,0)
-topScroll.ScrollBarThickness = 6
-topScroll.BackgroundTransparency = 1
-topScroll.Parent = topBar
+local contentLayout = Instance.new("UIListLayout")
+contentLayout.Padding = UDim.new(0,8)
+contentLayout.Parent = content
 
-local topList = Instance.new("UIListLayout")
-topList.FillDirection = Enum.FillDirection.Horizontal
-topList.Padding = UDim.new(0,8)
-topList.Parent = topScroll
-
-local topTabs = {"FPS","PVP","Grinding","Building","Stories","Horror","Roleplay","Simulators","FE Scripts","Trolling","Admin"}
-local topTabButtons = {}
-local activeTop = "FPS"
-
--- Content Scroll (center frame)
-local mainScroll = Instance.new("ScrollingFrame")
-mainScroll.Size = UDim2.new(1,-150,1, -110) -- slightly smaller to avoid overlapping top tabs
-mainScroll.Position = UDim2.new(0,150,0,106) -- moved down for spacing
-mainScroll.BackgroundColor3 = Color3.fromRGB(20,20,22)
-mainScroll.ScrollBarThickness = 8
-mainScroll.Parent = main
-makeUICorner(mainScroll, 10)
-
-local mainLayout = Instance.new("UIListLayout")
-mainLayout.Padding = UDim.new(0,8)
-mainLayout.Parent = mainScroll
-
-local function updateMainCanvas()
+local function updateCanvas()
     RunService.Heartbeat:Wait()
     local total = 0
-    for _,child in ipairs(mainScroll:GetChildren()) do
-        if child:IsA("GuiObject") and child ~= mainLayout then
+    for _,child in ipairs(content:GetChildren()) do
+        if child:IsA("GuiObject") and child ~= contentLayout then
             total = total + child.AbsoluteSize.Y + 8
         end
     end
-    mainScroll.CanvasSize = UDim2.new(0,0,0,math.max(total,mainScroll.AbsoluteWindowSize.Y))
+    content.CanvasSize = UDim2.new(0,0,0,math.max(total,content.AbsoluteWindowSize.Y))
 end
 
-local function makeWIPButton(text)
+local function makeButton(text)
     local b = Instance.new("TextButton")
-    b.Size = UDim2.new(1,-20,0,36)
+    b.Size = UDim2.new(1,-20,0,38)
     b.Position = UDim2.new(0,10,0,0)
     b.BackgroundColor3 = Color3.fromRGB(30,20,20)
     b.TextColor3 = TEXT
-    b.Text = text or "WIP!"
+    b.Text = text
     b.Font = Enum.Font.GothamSemibold
     b.TextSize = 16
     makeUICorner(b,8)
-    b.Parent = mainScroll
+    b.Parent = content
     b.MouseButton1Click:Connect(function()
-        print("WIP!")
-        errorLog.Text = "Status: Executed '"..b.Text.."' (WIP)"
+        print("Feature:", text)
     end)
-    updateMainCanvas()
+    updateCanvas()
 end
 
--- Populate Left Tabs
+local function loadTab(tabName)
+    for _,child in ipairs(content:GetChildren()) do
+        if child ~= contentLayout then child:Destroy() end
+    end
+    for i=1,12 do
+        makeButton("WIP Feature ("..tabName..")")
+    end
+end
+
+-- Create Left Tab Buttons
 for _,name in ipairs(leftTabs) do
     local t = Instance.new("TextButton")
-    t.Size = UDim2.new(0.92,0,0,40)
+    t.Size = UDim2.new(0.9,0,0,40)
     t.BackgroundColor3 = Color3.fromRGB(35,6,6)
     t.Text = name
     t.TextColor3 = TEXT
     t.Font = Enum.Font.GothamBold
-    t.TextSize = 16
+    t.TextSize = 15
     makeUICorner(t,8)
     t.Parent = sidebar
     leftTabButtons[name] = t
@@ -233,80 +189,19 @@ for _,name in ipairs(leftTabs) do
     t.MouseButton1Click:Connect(function()
         activeLeft = name
         for n,btn in pairs(leftTabButtons) do
-            btn.BackgroundColor3 = (n==activeLeft) and Color3.fromRGB(80,10,10) or Color3.fromRGB(35,6,6)
+            btn.BackgroundColor3 = (n==activeLeft) and Color3.fromRGB(80,8,8) or Color3.fromRGB(35,6,6)
             btn.TextColor3 = (n==activeLeft) and ACCENT or TEXT
         end
-        -- Clear content
-        for _,child in ipairs(mainScroll:GetChildren()) do
-            if child ~= mainLayout then child:Destroy() end
-        end
-        for i=1,10 do makeWIPButton("WIP!") end
-        errorLog.Text = "Status: Selected Left Tab '"..name.."'"
+        loadTab(name)
     end)
 end
 
-leftTabButtons[activeLeft].BackgroundColor3 = Color3.fromRGB(80,10,10)
+-- Highlight default tab
+leftTabButtons[activeLeft].BackgroundColor3 = Color3.fromRGB(80,8,8)
 leftTabButtons[activeLeft].TextColor3 = ACCENT
+loadTab(activeLeft)
 
--- Populate Top Tabs
-for _,name in ipairs(topTabs) do
-    local b = Instance.new("TextButton")
-    b.Size = UDim2.new(0,100,1,0)
-    b.BackgroundColor3 = Color3.fromRGB(35,8,8)
-    b.Text = name
-    b.TextColor3 = TEXT
-    b.Font = Enum.Font.GothamSemibold
-    b.TextSize = 14
-    makeUICorner(b,6)
-    b.Parent = topScroll
-    topTabButtons[name] = b
-
-    b.MouseButton1Click:Connect(function()
-        activeTop = name
-        for n,bt in pairs(topTabButtons) do
-            bt.BackgroundColor3 = (n==activeTop) and Color3.fromRGB(80,10,10) or Color3.fromRGB(35,8,8)
-            bt.TextColor3 = (n==activeTop) and ACCENT or TEXT
-        end
-        -- Clear content
-        for _,child in ipairs(mainScroll:GetChildren()) do
-            if child ~= mainLayout then child:Destroy() end
-        end
-        for i=1,12 do makeWIPButton("WIP!") end
-        errorLog.Text = "Status: Selected Top Tab '"..name.."'"
-    end)
-end
-
-topTabButtons[activeTop].BackgroundColor3 = Color3.fromRGB(80,10,10)
-topTabButtons[activeTop].TextColor3 = ACCENT
-
--- Top Scroll Canvas
-local function updateTopCanvas()
-    RunService.Heartbeat:Wait()
-    local width = 0
-    for _,child in ipairs(topScroll:GetChildren()) do
-        if child:IsA("GuiObject") and child ~= topList then
-            width = width + child.AbsoluteSize.X + 8
-        end
-    end
-    topScroll.CanvasSize = UDim2.new(0, math.max(width, topScroll.AbsoluteSize.X), 0, 0)
-end
-
-updateTopCanvas()
-topScroll:GetPropertyChangedSignal("AbsoluteSize"):Connect(updateTopCanvas)
-
-local function scrollTabs(offset)
-    TweenService:Create(topScroll, TweenInfo.new(0.4,Enum.EasingStyle.Quad), {CanvasPosition = Vector2.new(offset,0)}):Play()
-end
-
-leftArrow.MouseButton1Click:Connect(function()
-    scrollTabs(math.max(0, topScroll.CanvasPosition.X - (topScroll.AbsoluteWindowSize.X * 0.6)))
-end)
-
-rightArrow.MouseButton1Click:Connect(function()
-    scrollTabs(topScroll.CanvasPosition.X + (topScroll.AbsoluteWindowSize.X * 0.6))
-end)
-
--- Toggle
+-- Toggle UI
 local uiVisible = true
 UserInputService.InputBegan:Connect(function(input, processed)
     if not processed and input.KeyCode == Enum.KeyCode.Insert then
@@ -315,8 +210,4 @@ UserInputService.InputBegan:Connect(function(input, processed)
     end
 end)
 
--- Initial content
-for i=1,12 do makeWIPButton("WIP!") end
-
-print("[BMF Hub] Loaded successfully.")
-errorLog.Text = "Status: Loaded BMF Hub (WIP)"
+print("[BMF Hub] Loaded (No Top Tabs).")
