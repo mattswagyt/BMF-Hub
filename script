@@ -1,4 +1,4 @@
--- BMF Hub (Fixed Top Tabs & Clean Layout)
+-- BMF Hub
 
 -- Services
 local Players = game:GetService("Players")
@@ -47,11 +47,11 @@ screenGui.Name = "BMF_Hub_GUI"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = PlayerGui
 
--- Main Frame (taller to fit top tabs nicely)
+-- Main Frame
 local main = Instance.new("Frame")
 main.Name = "Main"
-main.Size = UDim2.new(0, 720, 0, 460) -- increased height
-main.Position = UDim2.new(0.5, -360, 0.5, -230)
+main.Size = UDim2.new(0, 720, 0, 450) -- slightly shorter than before
+main.Position = UDim2.new(0.5, -360, 0.5, -225)
 main.AnchorPoint = Vector2.new(0.5,0.5)
 main.BackgroundColor3 = DARK
 makeUICorner(main, 14)
@@ -136,14 +136,14 @@ sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 -- Top Tabs
 local topBar = Instance.new("Frame")
-topBar.Size = UDim2.new(1,-150,0,42) -- reduced height for top tabs
+topBar.Size = UDim2.new(1,-150,0,40) -- slightly smaller height
 topBar.Position = UDim2.new(0,150,0,56)
 topBar.BackgroundTransparency = 1
 topBar.Parent = main
 
 local leftArrow = Instance.new("TextButton")
 leftArrow.Size = UDim2.new(0,26,0,26)
-leftArrow.Position = UDim2.new(0,-6,0,8)
+leftArrow.Position = UDim2.new(0,-6,0,7)
 leftArrow.BackgroundColor3 = DARKER
 leftArrow.Text = "<"
 leftArrow.TextColor3 = TEXT
@@ -152,7 +152,7 @@ leftArrow.Parent = topBar
 
 local rightArrow = Instance.new("TextButton")
 rightArrow.Size = UDim2.new(0,26,0,26)
-rightArrow.Position = UDim2.new(1,-26,0,8)
+rightArrow.Position = UDim2.new(1,-26,0,7)
 rightArrow.BackgroundColor3 = DARKER
 rightArrow.Text = ">"
 rightArrow.TextColor3 = TEXT
@@ -175,10 +175,10 @@ local topTabs = {"FPS","PVP","Grinding","Building","Stories","Horror","Roleplay"
 local topTabButtons = {}
 local activeTop = "FPS"
 
--- Content Scroll (single scrolling frame)
+-- Content Scroll (center frame)
 local mainScroll = Instance.new("ScrollingFrame")
-mainScroll.Size = UDim2.new(1,-150,1, -104) -- fits below topBar and sidebar
-mainScroll.Position = UDim2.new(0,150,0,104)
+mainScroll.Size = UDim2.new(1,-150,1, -110) -- slightly smaller to avoid overlapping top tabs
+mainScroll.Position = UDim2.new(0,150,0,106) -- moved down for spacing
 mainScroll.BackgroundColor3 = Color3.fromRGB(20,20,22)
 mainScroll.ScrollBarThickness = 8
 mainScroll.Parent = main
@@ -188,7 +188,6 @@ local mainLayout = Instance.new("UIListLayout")
 mainLayout.Padding = UDim.new(0,8)
 mainLayout.Parent = mainScroll
 
--- Helper to update canvas
 local function updateMainCanvas()
     RunService.Heartbeat:Wait()
     local total = 0
@@ -200,7 +199,6 @@ local function updateMainCanvas()
     mainScroll.CanvasSize = UDim2.new(0,0,0,math.max(total,mainScroll.AbsoluteWindowSize.Y))
 end
 
--- WIP Button
 local function makeWIPButton(text)
     local b = Instance.new("TextButton")
     b.Size = UDim2.new(1,-20,0,36)
@@ -253,7 +251,7 @@ leftTabButtons[activeLeft].TextColor3 = ACCENT
 -- Populate Top Tabs
 for _,name in ipairs(topTabs) do
     local b = Instance.new("TextButton")
-    b.Size = UDim2.new(0,100,1,0) -- slightly narrower
+    b.Size = UDim2.new(0,100,1,0)
     b.BackgroundColor3 = Color3.fromRGB(35,8,8)
     b.Text = name
     b.TextColor3 = TEXT
