@@ -133,29 +133,31 @@ layout.Parent = sidebar
 layout.Padding = UDim.new(0,8)
 layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
-local content = Instance.new("ScrollingFrame")
-content.Size = UDim2.new(1, -170, 1, -128)
-content.Position = UDim2.new(0, 170, 0, 128)
-content.BackgroundColor3 = Color3.fromRGB(20,20,22)
-content.ScrollBarThickness = 8
-content.Parent = main
-makeUICorner(content, 10)
+-- Single scrolling frame for content & buttons
+local mainScroll = Instance.new("ScrollingFrame")
+mainScroll.Size = UDim2.new(1, -150, 1, -56)
+mainScroll.Position = UDim2.new(0, 150, 0, 56)
+mainScroll.BackgroundColor3 = Color3.fromRGB(20,20,22)
+mainScroll.ScrollBarThickness = 8
+mainScroll.Parent = main
+makeUICorner(mainScroll, 10)
 
-local contentLayout = Instance.new("UIListLayout")
-contentLayout.Parent = content
-contentLayout.Padding = UDim.new(0,8)
+local mainLayout = Instance.new("UIListLayout")
+mainLayout.Padding = UDim.new(0,8)
+mainLayout.Parent = mainScroll
 
-local function updateContentCanvas()
+local function updateMainCanvas()
     RunService.Heartbeat:Wait()
     local total = 0
-    for _,child in ipairs(content:GetChildren()) do
-        if child:IsA("GuiObject") and child ~= contentLayout then
+    for _,child in ipairs(mainScroll:GetChildren()) do
+        if child:IsA("GuiObject") and child ~= mainLayout then
             total = total + child.AbsoluteSize.Y + 8
         end
     end
-    content.CanvasSize = UDim2.new(0,0,0,math.max(total,content.AbsoluteWindowSize.Y))
+    mainScroll.CanvasSize = UDim2.new(0,0,0,math.max(total,mainScroll.AbsoluteWindowSize.Y))
 end
 
+-- WIP Button
 local function makeWIPButton(text)
     local b = Instance.new("TextButton")
     b.Size = UDim2.new(1,-20,0,36)
@@ -166,11 +168,12 @@ local function makeWIPButton(text)
     b.Font = Enum.Font.GothamSemibold
     b.TextSize = 16
     makeUICorner(b,8)
-    b.Parent = content
+    b.Parent = mainScroll
     b.MouseButton1Click:Connect(function()
         print("WIP!")
         errorLog.Text = "Status: Executed '"..b.Text.."' (WIP)"
     end)
+    updateMainCanvas()
 end
 
 -- Left tab logic
@@ -193,9 +196,11 @@ for _,name in ipairs(leftTabs) do
             btn.BackgroundColor3 = (n==activeLeft) and Color3.fromRGB(80,10,10) or Color3.fromRGB(35,6,6)
             btn.TextColor3 = (n==activeLeft) and ACCENT or TEXT
         end
-        content:ClearAllChildren()
+        -- Clear main scroll & add buttons
+        for _,child in ipairs(mainScroll:GetChildren()) do
+            if child ~= mainLayout then child:Destroy() end
+        end
         for i=1,10 do makeWIPButton("WIP!") end
-        updateContentCanvas()
         errorLog.Text = "Status: Selected Left Tab '"..name.."'"
     end)
 end
@@ -205,8 +210,8 @@ leftTabButtons[activeLeft].TextColor3 = ACCENT
 
 -- Top tabs
 local topBar = Instance.new("Frame")
-topBar.Size = UDim2.new(1,-170,0,62)
-topBar.Position = UDim2.new(0,170,0,56)
+topBar.Size = UDim2.new(1,-150,0,62)
+topBar.Position = UDim2.new(0,150,0,0)
 topBar.BackgroundTransparency = 1
 topBar.Parent = main
 
@@ -263,9 +268,11 @@ for _,name in ipairs(topTabs) do
             bt.BackgroundColor3 = (n==activeTop) and Color3.fromRGB(80,10,10) or Color3.fromRGB(35,8,8)
             bt.TextColor3 = (n==activeTop) and ACCENT or TEXT
         end
-        content:ClearAllChildren()
+        -- Clear main scroll & add buttons
+        for _,child in ipairs(mainScroll:GetChildren()) do
+            if child ~= mainLayout then child:Destroy() end
+        end
         for i=1,12 do makeWIPButton("WIP!") end
-        updateContentCanvas()
         errorLog.Text = "Status: Selected Top Tab '"..name.."'"
     end)
 end
@@ -273,7 +280,7 @@ end
 topTabButtons[activeTop].BackgroundColor3 = Color3.fromRGB(80,10,10)
 topTabButtons[activeTop].TextColor3 = ACCENT
 
--- ✅ FIX: Resize top scroll canvas properly
+-- Resize top scroll canvas
 local function updateTopCanvas()
     RunService.Heartbeat:Wait()
     local width = 0
@@ -310,9 +317,7 @@ UserInputService.InputBegan:Connect(function(input, processed)
 end)
 
 -- Initial content
-content:ClearAllChildren()
 for i=1,12 do makeWIPButton("WIP!") end
-updateContentCanvas()
 
 print("[BMF Hub] Loaded successfully.")
 errorLog.Text = "Status: Loaded BMF Hub (WIP)"
