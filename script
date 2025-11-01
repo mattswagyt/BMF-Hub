@@ -1,4 +1,4 @@
--- BMF Hub (No Top Tabs Version)
+-- BMF Hub
 
 -- Services
 local Players = game:GetService("Players")
@@ -101,7 +101,7 @@ sidebarLayout.Parent = sidebar
 sidebarLayout.Padding = UDim.new(0,6)
 sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
--- Categories (All moved here)
+-- Categories
 local leftTabs = {
     "Main",
     "Local Player",
@@ -139,7 +139,7 @@ contentLayout.Parent = content
 local function updateCanvas()
     RunService.Heartbeat:Wait()
     local total = 0
-    for _,child in ipairs(content:GetChildren()) do
+    for _,child in pairs(content:GetChildren()) do
         if child:IsA("GuiObject") and child ~= contentLayout then
             total = total + child.AbsoluteSize.Y + 8
         end
@@ -147,33 +147,71 @@ local function updateCanvas()
     content.CanvasSize = UDim2.new(0,0,0,math.max(total,content.AbsoluteWindowSize.Y))
 end
 
-local function makeButton(text)
+local function makeButton(text, callback)
     local b = Instance.new("TextButton")
-    b.Size = UDim2.new(1,-20,0,38)
+    b.Size = UDim2.new(1,-20,0,32) -- smaller height
     b.Position = UDim2.new(0,10,0,0)
     b.BackgroundColor3 = Color3.fromRGB(30,20,20)
     b.TextColor3 = TEXT
     b.Text = text
     b.Font = Enum.Font.GothamSemibold
-    b.TextSize = 16
+    b.TextSize = 15
     makeUICorner(b,8)
     b.Parent = content
+
     b.MouseButton1Click:Connect(function()
-        print("Feature:", text)
+        pcall(callback)
     end)
+
     updateCanvas()
 end
 
+-- Script Loader per Category
 local function loadTab(tabName)
     for _,child in ipairs(content:GetChildren()) do
         if child ~= contentLayout then child:Destroy() end
     end
-    for i=1,12 do
-        makeButton("WIP Feature ("..tabName..")")
+
+    if tabName == "FPS" then
+        makeButton("Prison Life - XHit", function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/thesigmacorex/RobloxScripts/main/XHit", true))()
+        end)
+
+    elseif tabName == "Horror" then
+        makeButton("The Intruder - House", function() loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/The-Intruder-House-Script/refs/heads/main/Script'))() end)
+        makeButton("The Intruder - Mall", function() loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/Intruder-Mall/refs/heads/main/Script'))() end)
+        makeButton("The Intruder - Mineshaft", function() loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/The-Intruder-Mineshaft/refs/heads/main/Script'))() end)
+        makeButton("The Intruder - Hospital", function() loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/The-Intruder-Hospital/refs/heads/main/Script'))() end)
+        makeButton("The Intruder - Subway", function() loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/The-Intruder-Subway/refs/heads/main/Script'))() end)
+        makeButton("Granny Multiplayer", function() loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/Granny-Multiplayer-Chapter-1/refs/heads/main/Script'))() end)
+        makeButton("Eyes the Horror Game", function() loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/eyes-the-horror-game/refs/heads/main/Script'))() end)
+        makeButton("Piggy", function() loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/BMF-Piggy/refs/heads/main/Script'))() end)
+        makeButton("Cheese Escape", function() loadstring(game:HttpGet('https://raw.githubusercontent.com/mattswagyt/Cheese-Escape/refs/heads/main/Script'))() end)
+
+    elseif tabName == "Admin" then
+        makeButton("Infinite Yield", function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+        end)
+
+    elseif tabName == "Other Scripts" then
+        makeButton("Dex Explorer", function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
+        end)
+        makeButton("Chat Bypass", function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/AnnaRoblox/AnnaBypasser/refs/heads/main/AnnaBypasser.lua",true))()
+        end)
+
+    else
+        -- Default WIP layout
+        for i=1,10 do
+            makeButton("WIP Feature ("..tabName..")", function()
+                print("WIP")
+            end)
+        end
     end
 end
 
--- Create Left Tab Buttons
+-- Create Sidebar Buttons
 for _,name in ipairs(leftTabs) do
     local t = Instance.new("TextButton")
     t.Size = UDim2.new(0.9,0,0,40)
@@ -196,7 +234,6 @@ for _,name in ipairs(leftTabs) do
     end)
 end
 
--- Highlight default tab
 leftTabButtons[activeLeft].BackgroundColor3 = Color3.fromRGB(80,8,8)
 leftTabButtons[activeLeft].TextColor3 = ACCENT
 loadTab(activeLeft)
@@ -210,4 +247,4 @@ UserInputService.InputBegan:Connect(function(input, processed)
     end
 end)
 
-print("[BMF Hub] Loaded (No Top Tabs).")
+print("[BMF Hub] Loaded with Scripted Categories ✅")
