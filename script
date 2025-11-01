@@ -1,4 +1,4 @@
--- BMF Hub (Clean, Perfectly Sized)
+-- BMF Hub (Fixed Top Tabs & Clean Layout)
 
 -- Services
 local Players = game:GetService("Players")
@@ -47,11 +47,11 @@ screenGui.Name = "BMF_Hub_GUI"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = PlayerGui
 
--- Main Frame
+-- Main Frame (taller to fit top tabs nicely)
 local main = Instance.new("Frame")
 main.Name = "Main"
-main.Size = UDim2.new(0, 720, 0, 420)
-main.Position = UDim2.new(0.5, -360, 0.5, -210)
+main.Size = UDim2.new(0, 720, 0, 460) -- increased height
+main.Position = UDim2.new(0.5, -360, 0.5, -230)
 main.AnchorPoint = Vector2.new(0.5,0.5)
 main.BackgroundColor3 = DARK
 makeUICorner(main, 14)
@@ -136,27 +136,27 @@ sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 -- Top Tabs
 local topBar = Instance.new("Frame")
-topBar.Size = UDim2.new(1,-150,0,62)
+topBar.Size = UDim2.new(1,-150,0,42) -- reduced height for top tabs
 topBar.Position = UDim2.new(0,150,0,56)
 topBar.BackgroundTransparency = 1
 topBar.Parent = main
 
 local leftArrow = Instance.new("TextButton")
-leftArrow.Size = UDim2.new(0,30,0,30)
-leftArrow.Position = UDim2.new(0,-6,0,16)
+leftArrow.Size = UDim2.new(0,26,0,26)
+leftArrow.Position = UDim2.new(0,-6,0,8)
 leftArrow.BackgroundColor3 = DARKER
 leftArrow.Text = "<"
 leftArrow.TextColor3 = TEXT
-makeUICorner(leftArrow,8)
+makeUICorner(leftArrow,6)
 leftArrow.Parent = topBar
 
 local rightArrow = Instance.new("TextButton")
-rightArrow.Size = UDim2.new(0,30,0,30)
-rightArrow.Position = UDim2.new(1,-24,0,16)
+rightArrow.Size = UDim2.new(0,26,0,26)
+rightArrow.Position = UDim2.new(1,-26,0,8)
 rightArrow.BackgroundColor3 = DARKER
 rightArrow.Text = ">"
 rightArrow.TextColor3 = TEXT
-makeUICorner(rightArrow,8)
+makeUICorner(rightArrow,6)
 rightArrow.Parent = topBar
 
 local topScroll = Instance.new("ScrollingFrame")
@@ -177,8 +177,8 @@ local activeTop = "FPS"
 
 -- Content Scroll (single scrolling frame)
 local mainScroll = Instance.new("ScrollingFrame")
-mainScroll.Size = UDim2.new(1,-150,1, -118) -- fits below topBar and sidebar
-mainScroll.Position = UDim2.new(0,150,0,118)
+mainScroll.Size = UDim2.new(1,-150,1, -104) -- fits below topBar and sidebar
+mainScroll.Position = UDim2.new(0,150,0,104)
 mainScroll.BackgroundColor3 = Color3.fromRGB(20,20,22)
 mainScroll.ScrollBarThickness = 8
 mainScroll.Parent = main
@@ -253,13 +253,13 @@ leftTabButtons[activeLeft].TextColor3 = ACCENT
 -- Populate Top Tabs
 for _,name in ipairs(topTabs) do
     local b = Instance.new("TextButton")
-    b.Size = UDim2.new(0,110,1,0)
+    b.Size = UDim2.new(0,100,1,0) -- slightly narrower
     b.BackgroundColor3 = Color3.fromRGB(35,8,8)
     b.Text = name
     b.TextColor3 = TEXT
     b.Font = Enum.Font.GothamSemibold
     b.TextSize = 14
-    makeUICorner(b,8)
+    makeUICorner(b,6)
     b.Parent = topScroll
     topTabButtons[name] = b
 
